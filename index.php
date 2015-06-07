@@ -1,5 +1,7 @@
 <?
 
+include('conn.php');
+
 
 
 
@@ -113,42 +115,129 @@ or die(mysql_error());
 
 <html>
  <head>
-  <title>PHP Test</title>
+  <title>GMHelper </title>
   <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
  </head>
  <body>
 
+<?php
 
+$result = mysql_query("SELECT * FROM `gmhelper_NPC`") or die(mysql_error());
 
-NPC Name:<input type="text" id="npc_name">
+while ( $row = mysql_fetch_array($result) ) 
+
+{
+echo ''.$row['npc_name'].'<br>';
+}
+
+?>
+
+NPC Name:<input type="text" id="npc_name"><br>
 <button id="insertnpc">Lägg till</button>
 
+<br>
+--------------------------
+<br>
+<h2>ADD NEW OBJECTS</h2>
+Object type:
+<select id="objecttype">
+<option value="monster">Monster</option>
+<option value="class">Class</option>
+</select>
+<br>
+Object name:<input type="text" id="objectname"><br>
+<button id="insertobjects">ADD OBJECT</button>
 
+<br>
+--------------
+<br>
+<h2>OBJECT ATTRIBUTES</h2>
+Object name:
+<select id="attrparent">
+<?php
+
+$result = mysql_query("SELECT * FROM `gmhelper_objects`") or die(mysql_error());
+
+while ( $row = mysql_fetch_array($result) ) 
+
+{
+echo '<option value="'.$row['id'].'">'.$row['name'].'</option>';
+}
+
+?>
+
+</select><br>
+Attribute name: 
+<select id="attrname">
+<option value="strength">Strength</option>
+<option value="dexterity">Dexterity</option>
+</select><br>
+Attribute value: <input type="text" id="attrvalue"><br>
+Description<input type="text" id="attrdescription"><br>
+<button id="insertobjectattr">ADD ATTRIBUTE</button>
 
 
 
      <script type="text/javascript">
  
-          $(document).on('click', '#insertnpc', function()
-          {
-          
-              var npc_name = $('#npc_name').val();
-            
-              $.ajax({
-                url: "/functions.php",
-                type: "post",
-                dataType: "html",
-                data: {'insertnpc': npc_name},
-                  
-                  success: function(data){
-                   alert(data)
-                  },
-                  error: function(){alert("Det gick inte!");
-                  }
-                  });
-           
-          });
+     	$(document).on('click', '#insertnpc', function()
+     	{
+     		var npc_name = $('#npc_name').val();
+     		$.ajax({
+     			url: "/functions.php",
+     			type: "post",
+     			dataType: "html",
+     			data: {'insertnpc': npc_name},
+     			success: function(data){
+     				alert(data)
+     			},
+     			error: function(){alert("Det gick inte!");
+     		}
+     	});
+     	});
+
+
+
+
+
+     	     	$(document).on('click', '#insertobjects', function()
+     	{
+     		var objecttype = $('#objecttype').val();
+     		var objectname = $('#objectname').val();
+     		$.ajax({
+     			url: "/functions.php",
+     			type: "post",
+     			dataType: "html",
+     			data: {'insertobject': '', 'objecttype': objecttype, 'objectname': objectname},
+     			success: function(data){
+     				alert(data)
+     			},
+     			error: function(){alert("Det gick inte!");
+     		}
+     	});
+     	});
+
+
+
+     	     	$(document).on('click', '#insertobjectattr', function()
+     	{
+     		var attrparent = $('#attrparent').val();
+     		var attrname = $('#attrname').val();
+     		var attrvalue = $('#attrvalue').val();
+     		var attrdescription = $('#attrdescription').val();
+     		$.ajax({
+     			url: "/functions.php",
+     			type: "post",
+     			dataType: "html",
+     			data: {'insertobjectattr': '', 'parent': attrparent, 'name': attrname, 'value': attrvalue, 'description': attrdescription},
+     			success: function(data){
+     				alert(data)
+     			},
+     			error: function(){alert("Det gick inte!");
+     		}
+     	});
+     	});
 
       </script>
 
